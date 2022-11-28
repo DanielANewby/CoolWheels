@@ -6,7 +6,9 @@
 #include "..\Shared\WirelessController.h"
 
 // main() runs in its own thread in the OS
-DigitalOut Led(D2);
+
+DigitalOut Led(D9);
+DigitalOut TestLight(D0);
 
 volatile sig_atomic_t userButtonSignal{ 0 };
 volatile sig_atomic_t userButtonDebounce{ 0 };
@@ -26,7 +28,7 @@ void UserDebounceDisable()
 int main()
 {
     userButton.rise(UserButtonPressed);
-
+    TestLight = 0;
     while (true) {
         if (userButtonSignal && !userButtonDebounce)
         {
