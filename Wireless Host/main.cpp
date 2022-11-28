@@ -3,6 +3,8 @@
 
 #include <signal.h>
 
+#include "..\Shared\WirelessController.h"
+
 // main() runs in its own thread in the OS
 DigitalOut Led(D2);
 
