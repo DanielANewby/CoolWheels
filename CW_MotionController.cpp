@@ -22,7 +22,8 @@ MotionController::MotionController(
 
 void MotionController::SetSpeed(float percent)
 {
-    speed = percent;
+    // Clamp speed as a percentage
+    speed = max(0.0f, min(1.0f, percent));
 }
 
 void MotionController::Forward()
