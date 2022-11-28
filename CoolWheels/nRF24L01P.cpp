@@ -587,7 +587,7 @@ void nRF24L01P::enableDynamicPayload(int pipe) {
 void nRF24L01P::disableDynamicPayload(void) {
     
     int feature = getRegister(_NRF24L01P_REG_FEATURE);
-    feature &= ~( 1 << 2 );
+    feature &= !( 1 << 2 );
     setRegister(_NRF24L01P_REG_FEATURE, feature);
 }
  
