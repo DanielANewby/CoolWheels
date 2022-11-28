@@ -1,0 +1,7 @@
+#ifndef CW_WIRELESS_CONTROLLER_H
+#define CW_WIRELESS_CONTROLLER_H
+#pragma once
+
+#include "nRF24L01P.h"
+
+#endif // CW_WIRELESS_CONTROLLER_H

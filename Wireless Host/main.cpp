@@ -1,5 +1,5 @@
 #include "mbed.h"
-#include "nRF24L01P.h"
+#include "..\Shared\nRF24L01P.h"
 
 #include <signal.h>
 
