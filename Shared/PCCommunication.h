@@ -13,6 +13,7 @@ public:
     {
         usbLink.read(inputBuffer, 1);
         Echo();
+        EchoCommands();
         Reset();
     }
 
@@ -86,8 +87,8 @@ private:
 
     BufferedSerial usbLink;
     unsigned commandBufferOffset{0};
-    bool echo;
-    bool commandEcho;
+    bool echo{ false }; // Reset to true during init
+    bool commandEcho{ false }; // Reset to true during init
     char commandBuffer[commandBufferSize];
     char inputBuffer[inputBufferSize];
 };
