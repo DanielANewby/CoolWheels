@@ -3,8 +3,11 @@
 
 #include <signal.h>
 
+#include <string>
+
 #include "..\Shared\WirelessController.h"
 #include "..\Shared\SevenSegment.h"
+#include "..\Shared\PCCommunication.h"
 
 // main() runs in its own thread in the OS
 
@@ -56,9 +59,18 @@ void segmentSignal() {
 
 int main()
 {
+    PCCommunication pc;
+
+    const std::string startMsg{ "Wireless Controller Starting\n" };
+    pc.Write(startMsg);
+
     segmentSignal();
     userButton.rise(UserButtonPressed);
     while (true) {
+        bool hasCommand = pc.Update();
+        if (hasCommand)
+            std::string cmdString = pc.ReadCommand();
+
         if (userButtonSignal && !userButtonDebounce)
         {
             userButtonDebounce = 1;
