@@ -78,7 +78,7 @@ private:
     int SegmentsFromChar(char a)
     {
         if (a >= 0 && a <= 9)
-            return SegmentDisplayNumbers[a - '0'];
+            return SegmentDisplayNumbers[a];
         if (a >= 'A' && a <= 'Z')
             return SegmenDisplayAlpha[a - 'A'];
         if (a >= 'a' && a <= 'z')
