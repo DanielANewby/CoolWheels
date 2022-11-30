@@ -44,6 +44,8 @@ int main()
 
     MoveMode mode{ kMode_Invalid };
 
+    int a = 2, b = 6;
+    bool waiting{ false };
     while (true) {
         if (userButtonSignal)
         {
@@ -55,8 +57,29 @@ int main()
             printf("Button pressed, running = %s\n", (mode == kMode_Invalid) ? "Stopped" : "running");
         }
 
+        if (a && !waiting)
+        {
+            if (b)
+            {
+                stopTimer.attach(stopTrigger, k_fwdTime);
+                motionControl.Forward();
+                waiting = true;
+                --b;
+            }
+            else {
+                --a;
+                if (a)
+                {   
+                    stopTimer.attach(stopTrigger, k_turnTime);
+                    motionControl.TurnRight();
+                    waiting = true;
+                }
+            }
+        }
+
         if (stopTriggerSignal)
         {
+            waiting = false;
             stopTriggerSignal = 0;
             if (mode == kMode_Turning)
                 mode = kMode_Forward;
@@ -64,6 +87,7 @@ int main()
                 mode = kMode_Turn;
         }
 
+        /**
         switch (mode)
         {
         case kMode_Forward:
@@ -85,6 +109,7 @@ int main()
         default: // No-op
             break;
         }
+        /**/
     }
 }
 
