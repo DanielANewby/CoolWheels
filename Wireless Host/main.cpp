@@ -8,6 +8,7 @@
 #include "..\Shared\WirelessController.h"
 #include "..\Shared\SevenSegment.h"
 #include "..\Shared\PCCommunication.h"
+#include "..\Shared\CWSignal.h"
 
 // main() runs in its own thread in the OS
 
