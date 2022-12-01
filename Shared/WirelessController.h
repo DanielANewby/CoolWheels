@@ -5,6 +5,8 @@
 #include "nRF24L01P.h"
 #include <memory>
 
+#include "PCCommunication.h"
+
 class WirelessController
 {
 public:
@@ -48,6 +50,8 @@ public:
         char sendBuffer[TransmitBufferSize] { moniker[0], moniker[1], moniker[2], moniker[3] };
         constexpr unsigned txSize { sizeof(sendBuffer) - 4 };
 
+        wirelessUnit.setTransmitMode();
+
         // Transmit txSize count of data in fixed-window fragments
         unsigned n {0};
         for (unsigned remain{ length }; n < length; n += txSize)
@@ -65,10 +69,11 @@ public:
             wait_us(50);
         }
         
+        wirelessUnit.setReceiveMode();
         return n;
     }
 
-    unsigned Read(char* buffer, unsigned length)
+    unsigned Recv(char* buffer, unsigned length)
     {
         unsigned readAmount{ 0 };
         char recvBuffer[TransmitBufferSize] { 0 };
@@ -85,7 +90,14 @@ public:
                 break; // Error or no data
             count -= sizeof(unsigned);
             if ((*(unsigned*)(recvBuffer)) != remoteIdentifier) // Don't do this at home
+            {
+                printf("Discarding chunk:\n");
+                constexpr char hexChars[] = "0123456789ABCDEF";
+                for (unsigned n = 0; n < sizeof(recvBuffer); ++n)
+                    printf("%c%c ", hexChars[((recvBuffer[n] >> 4) & 0xF)], hexChars[recvBuffer[n] & 0xF]);
+                printf("\n");
                 continue; // Discard packet
+            }
             memcpy(buffer + readAmount, recvBuffer + sizeof(unsigned), count);
             readAmount += count;
         }
@@ -98,14 +110,15 @@ public:
         return wirelessUnit.readable(NRF24L01P_PIPE_P0);
     }
 
+    static const unsigned HostIdentifier = 0x48343230; // "H420"
+    static const unsigned BotIdentifier = 0x43573639; // "CW69"
+    static constexpr unsigned long long HostAddress = { 0x600d405769ull };
+    static constexpr unsigned long long BotAddress  = { 0x420c001b07ull };
+
 private:
     enum ePinMap { kPinMap_MOSI, kPinMap_MISO, kPinMap_SCK, kPinMap_CSN, kPinMap_CE, kPinMap_IRQ, kPinMap_Count };
     static constexpr PinName PinMap[kPinMap_Count] { D11, D12, D13, D14, D10, D15 };
     static constexpr unsigned TransmitBufferSize{ 32 };
-    static const unsigned HostIdentifier = 0x48343230; // "H420"
-    static const unsigned BotIdentifier = 0x43573639; // "CW69"
-    static constexpr unsigned long long HostAddress = { 0x0000000000 };
-    static constexpr unsigned long long BotAddress  = { 0x0000000000 };
 
     nRF24L01P wirelessUnit;
     unsigned localIdentifier;

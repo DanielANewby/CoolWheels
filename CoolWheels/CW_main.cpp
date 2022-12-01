@@ -2,6 +2,8 @@
 
 #include <signal.h>
 
+#include "..\Shared\WirelessController.h"
+
 #include "CW_MotorController.h"
 #include "CW_MotionController.h"
 
@@ -40,12 +42,19 @@ enum MoveMode {
 // main() runs in its own thread in the OS
 int main()
 {
-    switch1.rise(UserButtonPressed);
+    printf("Starting\n");
+    printf("Starting wireless controller");
+    WirelessController wc{
+        WirelessController::BotIdentifier, // Host id,
+        WirelessController::HostIdentifier, // Remote id
+        WirelessController::BotAddress
+    };
+    printf("Started\n");
+
+/*    switch1.rise(UserButtonPressed);
 
     MoveMode mode{ kMode_Invalid };
 
-    int a = 2, b = 6;
-    bool waiting{ false };
     while (true) {
         if (userButtonSignal)
         {
@@ -57,48 +66,33 @@ int main()
             printf("Button pressed, running = %s\n", (mode == kMode_Invalid) ? "Stopped" : "running");
         }
 
-        if (a && !waiting)
-        {
-            if (b)
-            {
-                stopTimer.attach(stopTrigger, k_fwdTime);
-                motionControl.Forward();
-                waiting = true;
-                --b;
-            }
-            else {
-                --a;
-                if (a)
-                {   
-                    stopTimer.attach(stopTrigger, k_turnTime);
-                    motionControl.TurnRight();
-                    waiting = true;
-                }
-            }
-        }
-
         if (stopTriggerSignal)
         {
-            waiting = false;
             stopTriggerSignal = 0;
+            ThisThread::sleep_for(100ms);
             if (mode == kMode_Turning)
                 mode = kMode_Forward;
             if (mode == kMode_Moving)
                 mode = kMode_Turn;
         }
 
-        /**
+        if (wc.Readable())
+        {
+            char buffer[64] = { 0 };
+            wc.Recv(buffer, 32);
+            wc.Send(buffer + 4, 28);
+        }
+
+        /*/ // This is a comment switch, replace * w/ ** to enable below
         switch (mode)
         {
         case kMode_Forward:
-            ThisThread::sleep_for(100ms);
             mode = kMode_Moving;
             stopTimer.attach(stopTrigger, k_fwdTime);
             motionControl.Forward();
             break;
 
         case kMode_Turn:
-            ThisThread::sleep_for(100ms);
             mode = kMode_Turning;
             stopTimer.attach(stopTrigger, k_turnTime);
             motionControl.TurnRight();

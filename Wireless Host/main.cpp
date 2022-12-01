@@ -58,19 +58,40 @@ void segmentSignal() {
     segmentTimer.attach(segmentSignal, 500ms);
 }
 
+
+
 int main()
 {
     PCCommunication pc;
-
+    
     const std::string startMsg{ "Wireless Controller Starting\n" };
     pc.Write(startMsg);
+    WirelessController wc{
+        WirelessController::HostIdentifier, // Host id
+        WirelessController::BotIdentifier, // Remote id,
+        WirelessController::HostAddress
+    };
 
     segmentSignal();
     userButton.rise(UserButtonPressed);
     while (true) {
         bool hasCommand = pc.Update();
         if (hasCommand)
+        {
             std::string cmdString = pc.ReadCommand();
+            pc.Write("Sending command: ");
+            pc.Write(cmdString);
+            pc.Write("\n");
+            wc.Send(cmdString.c_str(), cmdString.length());
+            pc.Write("Sent\n");
+            while (!wc.Readable())
+                wait_us(500);
+            char buffer[256] { 0 };
+            wc.Recv(buffer, 255);
+            pc.Write("Received: ");
+            pc.Write(buffer);
+            pc.Write("\n");
+        }
 
         if (userButtonSignal && !userButtonDebounce)
         {
