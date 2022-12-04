@@ -9,9 +9,10 @@
 class PCCommunication
 {
 public:
-    PCCommunication(): usbLink(USBTX, USBRX)
+    PCCommunication(bool bSpuriousChar = false): usbLink(USBTX, USBRX)
     {
-        usbLink.read(inputBuffer, 1);
+        if (bSpuriousChar)
+            usbLink.read(inputBuffer, 1);
         Echo();
         EchoCommands();
         Reset();
@@ -59,7 +60,7 @@ public:
             }
             if (hasNewline)
             {
-                usbLink.write("\nHas newline\n", 1);
+                printf("\nHas newline\n");
                 if (commandEcho)
                    printf("Command: %s\n", commandBuffer);
                 commandBufferOffset = 0;

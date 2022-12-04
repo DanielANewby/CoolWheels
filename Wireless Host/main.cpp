@@ -66,6 +66,7 @@ int main()
     
     const std::string startMsg{ "Wireless Controller Starting\n" };
     pc.Write(startMsg);
+    
     WirelessController wc{
         WirelessController::HostIdentifier, // Host id
         WirelessController::BotIdentifier, // Remote id,

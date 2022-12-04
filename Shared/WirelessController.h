@@ -62,7 +62,11 @@ public:
 
             // Load buffer and transmit
             memcpy(sendBuffer + 4, buffer + n, min(remain, txSize));
-            wirelessUnit.write(NRF24L01P_PIPE_P0, sendBuffer, TransmitBufferSize);
+            const auto written = wirelessUnit.write(NRF24L01P_PIPE_P0, sendBuffer, TransmitBufferSize);
+            if (written != TransmitBufferSize)
+            {
+                printf("Warning: write length (%d) does not match sendq length (%d)\n", written, txSize);
+            }
             
             // Assume write succeeded
             remain -= txSize;
