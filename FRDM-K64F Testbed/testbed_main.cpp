@@ -46,8 +46,8 @@ int main()
 
         if (wc.Readable())
         {   
-            char buffer[256] { 0 };
-            wc.Recv(buffer, 255);
+            char buffer[24] { 0 };
+            wc.Recv(buffer, 24);
             pc.Write("Received: ");
             pc.Write(buffer);
             pc.Write("\n");            
