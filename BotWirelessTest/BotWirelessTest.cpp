@@ -2,6 +2,7 @@
 
 #include "..\Shared\PCCommunication.h"
 #include "..\Shared\WirelessController.h"
+#include "..\Shared\WirelessConnection.h"
 
 std::string CharToHex(char c) {
     const char codes[] = "0123456789ABCDEF";
@@ -21,7 +22,7 @@ int main()
     WirelessController wc{
         WirelessController::BotIdentifier, // Remote id,
         WirelessController::HostIdentifier, // Host id
-        WirelessController::BotAddress
+        WirelessController::HostAddress
     };
 
     pc.Write("Wireless Controller initialized\n");

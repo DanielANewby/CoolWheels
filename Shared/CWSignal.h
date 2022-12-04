@@ -120,4 +120,4 @@ private:
 	char pImpl[ListenerSize]{ 0 };
 };
 
-#endif // QNAN_SIGNAL_H
+#endif // SIGNAL_H
