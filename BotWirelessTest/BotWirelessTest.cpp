@@ -21,7 +21,7 @@ int main()
     WirelessController wc{
         WirelessController::BotIdentifier, // Remote id,
         WirelessController::HostIdentifier, // Host id
-        WirelessController::HostAddress
+        WirelessController::BotAddress
     };
 
     pc.Write("Wireless Controller initialized\n");
