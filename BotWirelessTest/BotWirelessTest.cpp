@@ -20,9 +20,19 @@ int main()
     ThisThread::sleep_for(250ms);
 
     while (true) {
+        bool hasCommand = pc.Update();
+        if (hasCommand)
+        {
+            std::string cmdString = pc.ReadCommand();
+            pc.Write("OK\n");
+        }
+
         if (wc.Readable())
         {
-            pc.Write(".");
+            pc.Write("Readable");
+            char buffer[32] { 0 };
+            wc.Recv(buffer, sizeof(buffer));
+            pc.Write(buffer);
         }
         ThisThread::sleep_for(200ms);
     }
