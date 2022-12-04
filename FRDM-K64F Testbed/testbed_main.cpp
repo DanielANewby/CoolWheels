@@ -33,21 +33,13 @@ int main()
 
             wc.Send(cmdString.c_str(), cmdString.length());
             pc.Write("Sent\n");
-
-            green_builtin_led = 1;
-            red_builtin_led = 0;
-            ThisThread::sleep_for(200ms);
-        }
-        else
-        {
-            red_builtin_led = 1;
-            green_builtin_led = 0;
         }
 
         if (wc.Readable())
         {   
-            char buffer[24] { 0 };
-            wc.Recv(buffer, 24);
+            char buffer[32] { 0 };
+            memset(buffer, 0, sizeof(buffer));
+            wc.Recv(buffer, sizeof(buffer));
             pc.Write("Received: ");
             pc.Write(buffer);
             pc.Write("\n");            
