@@ -34,18 +34,6 @@ int main()
             wc.Send(cmdString.c_str(), cmdString.length());
             pc.Write("Sent\n");
 
-            /*
-            while (!wc.Readable())
-                wait_us(500);
-            pc.Write("Wait finished\n");
-            */
-            
-            char buffer[256] { 0 };
-            wc.Recv(buffer, 255);
-            pc.Write("Received: ");
-            pc.Write(buffer);
-            pc.Write("\n");
-            
             green_builtin_led = 1;
             red_builtin_led = 0;
             ThisThread::sleep_for(200ms);
@@ -54,6 +42,15 @@ int main()
         {
             red_builtin_led = 1;
             green_builtin_led = 0;
+        }
+
+        if (wc.Readable())
+        {   
+            char buffer[256] { 0 };
+            wc.Recv(buffer, 255);
+            pc.Write("Received: ");
+            pc.Write(buffer);
+            pc.Write("\n");            
         }
     }
 }
