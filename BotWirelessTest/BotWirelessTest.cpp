@@ -38,21 +38,24 @@ int main()
         if (wc.Readable())
         {
             pc.Write("Readable\n");
-            char buffer[32] { 0 };
+            char buffer[24] { 0 };
+            memset(buffer, 0, sizeof(buffer));
             wc.Recv(buffer, sizeof(buffer));
             std::string recvHex;
-            for (unsigned n = 0; n < 16; ++n)
+            for (unsigned n = 0; n < 12; ++n)
                 recvHex += CharToHex(buffer[n]) + ' ';
             recvHex += '\n';
-            for (unsigned n = 16; n < 32; ++n)
+            for (unsigned n = 12; n < 24; ++n)
                 recvHex += CharToHex(buffer[n]) + ' ';
             recvHex += '\n';
             pc.Write(buffer);
             pc.Write("\n");
             pc.Write(recvHex);
             pc.Write("End\n");
+            
+            pc.Write("Replying");
+            wc.Send(buffer, sizeof(buffer));
         }
-        ThisThread::sleep_for(200ms);
     }
 }
 

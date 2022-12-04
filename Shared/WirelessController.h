@@ -70,7 +70,6 @@ public:
             
             // Assume write succeeded
             remain -= txSize;
-            wait_us(50);
         }
         
         wirelessUnit.setReceiveMode();
