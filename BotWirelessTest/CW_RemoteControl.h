@@ -31,6 +31,7 @@ public:
     void OnTurnRightTimed(unsigned ms);
     void OnSetSpeed(float speed);
     void OnGetSpeed();
+    void OnGo();
     void OnStop();
 
     // Positioning protocol

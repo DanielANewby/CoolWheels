@@ -27,6 +27,7 @@ public:
     Event_TurnRightTimed { wc.Recv_TurnRightTimed, this, &RC_Base::OnTurnRightTimed },
     Event_SetSpeed { wc.Recv_SetSpeed, this, &RC_Base::OnSetSpeed },
     Event_GetSpeed { wc.Recv_GetSpeed, this, &RC_Base::OnGetSpeed },
+    Event_Go{ wc.Recv_Go, this, &RC_Base::OnGo },
     Event_Stop { wc.Recv_Stop, this, &RC_Base::OnStop },
     Event_SetPosition { wc.Recv_SetPosition, this, &RC_Base::OnSetPosition },
     Event_GetPosition { wc.Recv_GetPosition, this, &RC_Base::OnGetPosition },
@@ -61,6 +62,7 @@ public:
     virtual void OnTurnRightTimed(unsigned ms) = 0;
     virtual void OnSetSpeed(float speed) = 0;
     virtual void OnGetSpeed() = 0;
+    virtual void OnGo() = 0;
     virtual void OnStop() = 0;
 
     // Positioning protocol
@@ -98,6 +100,7 @@ protected:
     SignalReceiver Event_TurnRightTimed;
     SignalReceiver Event_SetSpeed;
     SignalReceiver Event_GetSpeed;
+    SignalReceiver Event_Go;
     SignalReceiver Event_Stop;
 
     SignalReceiver Event_SetPosition;

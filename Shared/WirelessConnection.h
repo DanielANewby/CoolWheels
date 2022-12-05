@@ -31,6 +31,7 @@ public:
         eProto_TurnRightT,
         eProto_SetSpeed,
         eProto_GetSpeed,
+        eProto_Go,
         eProto_Stop,
         eProto_SetPosition,
         eProto_GetPosition,
@@ -100,6 +101,7 @@ public:
     void TurnRightTimed(unsigned ms);
     void SetSpeed(float speed);
     void GetSpeed();
+    void Go();
     void Stop();
 
     // Positioning protocol
@@ -137,6 +139,7 @@ public:
     Signal<unsigned> Recv_TurnRightTimed;
     Signal<float> Recv_SetSpeed;
     Signal<> Recv_GetSpeed;
+    Signal<> Recv_Go;
     Signal<> Recv_Stop;
 
     Signal<unsigned, unsigned> Recv_SetPosition;
@@ -185,6 +188,7 @@ private:
     void Dispatch_TurnRightTimed(char* payload);
     void Dispatch_SetSpeed(char* payload);
     void Dispatch_GetSpeed(char* payload);
+    void Dispatch_Go(char* payload);
     void Dispatch_Stop(char* payload);
     void Dispatch_SetPosition(char* payload);
     void Dispatch_GetPosition(char* payload);
@@ -219,6 +223,7 @@ private:
             &WirelessConnection::Dispatch_TurnRightTimed,
             &WirelessConnection::Dispatch_SetSpeed,
             &WirelessConnection::Dispatch_GetSpeed,
+            &WirelessConnection::Dispatch_Go,
             &WirelessConnection::Dispatch_Stop,
             &WirelessConnection::Dispatch_SetPosition,
             &WirelessConnection::Dispatch_GetPosition,
@@ -346,6 +351,11 @@ inline void WirelessConnection::Dispatch_SetSpeed(char* payload)
 inline void WirelessConnection::Dispatch_GetSpeed(char* payload) 
 {
     Recv_GetSpeed();    
+}
+
+inline void WirelessConnection::Dispatch_Go(char* payload) 
+{
+    Recv_Go();
 }
 
 inline void WirelessConnection::Dispatch_Stop(char* payload) 
@@ -508,6 +518,11 @@ inline void WirelessConnection::SetSpeed(float speed)
 inline void WirelessConnection::GetSpeed()
 {
     SendRaw(eProto_GetSpeed, nullptr, 0);
+}
+
+inline void WirelessConnection::Go() 
+{
+    SendRaw(eProto_Go, nullptr, 0);
 }
 
 inline void WirelessConnection::Stop() 

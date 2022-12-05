@@ -30,6 +30,9 @@ public:
         {
             (this->*cmdMap[tokens[0]])(tokens);
         }
+        else {
+            printf("Bad command: %s\n", cmd.c_str());
+        }
     }
 
 private:
@@ -67,38 +70,43 @@ private:
 
     void ack(const std::vector<std::string>& tokens)
     {
-        validate(tokens, 2);
-        unsigned seq = convert<unsigned>(tokens[1]);
-        printf("Sending Ack %d\n", seq);
-        wc.Ack(seq);
+        if (validate(tokens, 2)) {
+            unsigned seq = convert<unsigned>(tokens[1]);
+            printf("Sending Ack %d\n", seq);
+            wc.Ack(seq);
+        }
     }
 
     void bad(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned seq = convert<unsigned>(tokens[1]);
-        printf("Sending bad commend %d\n", seq);
-        wc.BadCommand(seq);
+        if (validate(tokens, 2)) {
+            unsigned seq = convert<unsigned>(tokens[1]);
+            printf("Sending bad commend %d\n", seq);
+            wc.BadCommand(seq);
+        }
     }
 
     void notimpl(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned seq = convert<unsigned>(tokens[1]);
-        printf("Sending NotImpl %d\n", seq);
-        wc.NotImplemented(WirelessConnection::eProtocolCommand(seq));
+        if (validate(tokens, 2)) {
+            unsigned seq = convert<unsigned>(tokens[1]);
+            printf("Sending NotImpl %d\n", seq);
+            wc.NotImplemented(WirelessConnection::eProtocolCommand(seq));
+        }
     }
 
     void ok (const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned seq = convert<unsigned>(tokens[1]);
-        printf("Sending OK: %d\n", seq);
-        wc.OK(seq);
+        if (validate(tokens, 2)) {
+            unsigned seq = convert<unsigned>(tokens[1]);
+            printf("Sending OK: %d\n", seq);
+            wc.OK(seq);
+        }
     }
 
     void drop(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned seq = convert<unsigned>(tokens[1]);
-        printf("Sending DROP: %d\n", seq);
-        wc.Drop(seq);
+        if (validate(tokens, 2)) {
+            unsigned seq = convert<unsigned>(tokens[1]);
+            printf("Sending DROP: %d\n", seq);
+            wc.Drop(seq);
+        }
     }
 
     void echo(const std::vector<std::string>& tokens) {
@@ -112,10 +120,11 @@ private:
     }
 
     void ping(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned seq = convert<unsigned>(tokens[1]);
-        printf("Sending PING: %d\n", seq);
-        wc.Ping(seq);
+        if (validate(tokens, 2)) {
+            unsigned seq = convert<unsigned>(tokens[1]);
+            printf("Sending PING: %d\n", seq);
+            wc.Ping(seq);
+        }
     }
 
     void waiting(const std::vector<std::string>& tokens) {
@@ -124,54 +133,67 @@ private:
     }
 
     void leftbias(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        float param = convert<float>(tokens[1]);
-        printf("Sending Left Bias: %f\n", param);
-        wc.SetLeftWheelBias(param);
+        if (validate(tokens, 2)) {
+            float param = convert<float>(tokens[1]);
+            printf("Sending Left Bias: %f\n", param);
+            wc.SetLeftWheelBias(param);
+        }
     }
 
     void rightbias(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        float param = convert<float>(tokens[1]);
-        printf("Sending Right Bias: %f\n", param);
-        wc.SetRightWheelBias(param);
+        if (validate(tokens, 2)) {
+            float param = convert<float>(tokens[1]);
+            printf("Sending Right Bias: %f\n", param);
+            wc.SetRightWheelBias(param);
+        }
     }
 
     void turnld(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned param = convert<unsigned>(tokens[1]);
-        printf("Sending Turn Left Degrees: %d\n", param);
-        wc.TurnLeftDegrees(param);
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending Turn Left Degrees: %d\n", param);
+            wc.TurnLeftDegrees(param);
+        }
     }
     void turnrd(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned param = convert<unsigned>(tokens[1]);
-        printf("Sending Turn Right Degrees: %d\n", param);
-        wc.TurnRightDegrees(param);
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending Turn Right Degrees: %d\n", param);
+            wc.TurnRightDegrees(param);
+        }
     }
     void turnlt(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned param = convert<unsigned>(tokens[1]);
-        printf("Sending Turn Left Timed: %d\n", param);
-        wc.TurnLeftTimed(param);
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending Turn Left Timed: %d\n", param);
+            wc.TurnLeftTimed(param);
+        }
     }
     void turnrt(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        unsigned param = convert<unsigned>(tokens[1]);
-        printf("Sending Turn Right Timed: %d\n", param);
-        wc.TurnRightTimed(param);
+        if (validate(tokens, 2))
+        {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending Turn Right Timed: %d\n", param);
+            wc.TurnRightTimed(param);
+        }
     }
 
     void speed(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        float param = convert<float>(tokens[1]);
-        printf("Sending speed: %f\n", param);
-        wc.SetSpeed(param);
+        if (validate(tokens, 2)) {
+            float param = convert<float>(tokens[1]);
+            printf("Sending speed: %f\n", param);
+            wc.SetSpeed(param);
+        }
     }
 
     void getspeed(const std::vector<std::string>& tokens) {
         pc.Write("Sending GetSpeed\n");
         wc.GetSpeed();
+    }
+
+    void go(const std::vector<std::string>&){
+        pc.Write("Sending GO\n");
+        wc.Go();
     }
 
     void stop(const std::vector<std::string>& tokens) {
@@ -180,11 +202,12 @@ private:
     }
 
     void setpos(const std::vector<std::string>& tokens) {
-        validate(tokens, 3);
-        unsigned xPos = convert<unsigned>(tokens[1]);
-        unsigned yPos = convert<unsigned>(tokens[2]);
-        printf("Sending SetPos: %d, %d\n", xPos, yPos);
-        wc.SetPosition(xPos, yPos);
+        if (validate(tokens, 3)) {
+            unsigned xPos = convert<unsigned>(tokens[1]);
+            unsigned yPos = convert<unsigned>(tokens[2]);
+            printf("Sending SetPos: %d, %d\n", xPos, yPos);
+            wc.SetPosition(xPos, yPos);
+        }
     }
     
     void getpos(const std::vector<std::string>& tokens) {
@@ -193,10 +216,11 @@ private:
     }
 
     void seto(const std::vector<std::string>& tokens) {
-        validate(tokens, 2);
-        float param = convert<float>(tokens[1]);
-        printf("Sending Left Bias: %f\n", param);
-        wc.SetOrientation(param);
+        if (validate(tokens, 2)) {
+            float param = convert<float>(tokens[1]);
+            printf("Sending Left Bias: %f\n", param);
+            wc.SetOrientation(param);
+        }
     }
 
     void geto(const std::vector<std::string>& tokens) {
@@ -205,11 +229,12 @@ private:
     }
 
     void setdst(const std::vector<std::string>& tokens) {
-        validate(tokens, 3);
-        unsigned xPos = convert<unsigned>(tokens[1]);
-        unsigned yPos = convert<unsigned>(tokens[2]);
-        printf("Sending Set Dest: %d, %d\n", xPos, yPos);
-        wc.SetDestination(xPos, yPos);
+        if (validate(tokens, 3)) {
+            unsigned xPos = convert<unsigned>(tokens[1]);
+            unsigned yPos = convert<unsigned>(tokens[2]);
+            printf("Sending Set Dest: %d, %d\n", xPos, yPos);
+            wc.SetDestination(xPos, yPos);
+        }
     }
 
     void getdst(const std::vector<std::string>& tokens) {
@@ -222,21 +247,24 @@ private:
     }
 
     void pathnode(const std::vector<std::string>& tokens) {
-        validate(tokens, 4);
-        unsigned step{0}, nodeX{0}, nodeY{0};
-        step = convert<unsigned>(tokens[1]);
-        nodeX = convert<unsigned>(tokens[2]);
-        nodeY = convert<unsigned>(tokens[3]);
-        printf("Sending path node: Step: %d, (%d, %d)\n", step, nodeX, nodeY);
-        wc.RelayPath(step, nodeX, nodeY);
+        if (validate(tokens, 4))
+        {
+            unsigned step{0}, nodeX{0}, nodeY{0};
+            step = convert<unsigned>(tokens[1]);
+            nodeX = convert<unsigned>(tokens[2]);
+            nodeY = convert<unsigned>(tokens[3]);
+            printf("Sending path node: Step: %d, (%d, %d)\n", step, nodeX, nodeY);
+            wc.RelayPath(step, nodeX, nodeY);
+        }
     }
 
     void obstacle(const std::vector<std::string>& tokens) {
-        validate(tokens, 3);
-        unsigned xPos = convert<unsigned>(tokens[1]);
-        unsigned yPos = convert<unsigned>(tokens[2]);
-        printf("Sending Obstacle: %d, %d\n", xPos, yPos);
-        wc.NotifyObstacle(xPos, yPos);
+        if (validate(tokens, 3)) {
+            unsigned xPos = convert<unsigned>(tokens[1]);
+            unsigned yPos = convert<unsigned>(tokens[2]);
+            printf("Sending Obstacle: %d, %d\n", xPos, yPos);
+            wc.NotifyObstacle(xPos, yPos);
+        }
     }
 
     std::map<std::string, void(CLI::*)(const std::vector<std::string>&)> cmdMap {
@@ -257,6 +285,7 @@ private:
         { "turnrt", &CLI::turnrt },
         { "speed", &CLI::speed },
         { "getspeed", &CLI::getspeed },
+        { "go", &CLI::go },
         { "stop", &CLI::stop },
         { "setpos", &CLI::setpos },
         { "getpos", &CLI::getpos },

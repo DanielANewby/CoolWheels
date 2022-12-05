@@ -60,9 +60,8 @@ public:
             }
             if (hasNewline)
             {
-                printf("\nHas newline\n");
                 if (commandEcho)
-                   printf("Command: %s\n", commandBuffer);
+                   printf("%s\n", commandBuffer);
                 commandBufferOffset = 0;
             }
             memset(inputBuffer, 0, inputBufferSize);

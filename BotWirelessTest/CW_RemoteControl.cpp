@@ -126,6 +126,11 @@ void RemoteControl::OnGetSpeed()
     trace("Recv GetSpeed\n");
 }
 
+void RemoteControl::OnGo()
+{
+    wc.NotImplemented(WirelessConnection::eProto_Go);
+    trace("Recv GO\n");
+}
 void RemoteControl::OnStop() 
 { 
     wc.NotImplemented(WirelessConnection::eProto_Stop); 
