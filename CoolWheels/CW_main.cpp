@@ -51,11 +51,12 @@ int main()
     };
     printf("Started\n");
 
-/*    switch1.rise(UserButtonPressed);
+    switch1.rise(UserButtonPressed);
 
     MoveMode mode{ kMode_Invalid };
 
     while (true) {
+/*
         if (userButtonSignal)
         {
             userButtonSignal = 0;
@@ -82,7 +83,7 @@ int main()
             wc.Recv(buffer, 32);
             wc.Send(buffer + 4, 28);
         }
-
+*/
         /*/ // This is a comment switch, replace * w/ ** to enable below
         switch (mode)
         {

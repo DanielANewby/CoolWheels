@@ -17,6 +17,11 @@ public:
     );
 
     void SetSpeed(float percent);
+    
+    void SetLeftWheelBias(float percent) { leftBias = percent; }
+    void SetRightWheelBias(float percent) { rightBias = percent }
+    float GetLeftWheelBias() { return leftBias; }
+    float GetRightWheelBias() { return rightBias; }
 
     void Forward();
     void Reverse();
@@ -29,6 +34,8 @@ private:
     MotorController rightWheel;
 
     float speed;
+    float leftBias { 1.f };
+    float rightBias { 1.f };
 };
 
 #endif // CW_MOTION_CONTROLLER_H

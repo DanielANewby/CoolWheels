@@ -15,6 +15,7 @@ public:
         eProto_NOTHING,
         eProto_HostPair,
         eProto_Ack,
+        eProto_Sync,
         eProto_BadCommand,
         eProto_NotImpl,
         eProto_OK,
@@ -54,6 +55,8 @@ public:
     }
     {}
 
+    void SetSequenceCounter(unsigned seq) { sequenceCounter = seq; }
+    
     void Update()
     {
         if (wc.Readable())
@@ -74,16 +77,17 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     // Send commands
     ///////////////////////////////////////////////////////////////////////////
-    void SendRaw(eProtocolCommand, char* params, unsigned length, unsigned seq = 0);
+    void SendRaw(eProtocolCommand, const char* params, unsigned length, unsigned seq = 0);
 
     // Base protocol signals
     void HostPair();
     void Ack(unsigned seq);
+    void Sync(unsigned seq);
     void BadCommand(unsigned seq);
     void NotImplemented(eProtocolCommand command);
     void OK(unsigned seq);
     void Drop(unsigned seq);
-    void Echo(char* data, unsigned length);
+    void Echo(const char* data, unsigned length);
     void Ping(unsigned id);
     void Waiting();
 
@@ -116,6 +120,7 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     Signal<> Recv_HostPair;
     Signal<unsigned> Recv_Ack;
+    Signal<unsigned> Recv_Sync;
     Signal<unsigned> Recv_BadCommand;
     Signal<eProtocolCommand> Recv_NotImplemented;
     Signal<unsigned> Recv_OK;
@@ -149,6 +154,9 @@ private:
     struct Datagram {
         unsigned seq;
         eProtocolCommand command;
+
+        // This is larger than necessary so we always have a crash pad or
+        // trailing null set
         char payload[24];
     };
 
@@ -161,6 +169,7 @@ private:
     void Dispatch_Nothing(char*) {};
     void Dispatch_HostPair(char* payload);
     void Dispatch_Ack(char* payload);
+    void Dispatch_Sync(char* payload);
     void Dispatch_BadCommand(char* payload);
     void Dispatch_NotImplemented(char* payload);
     void Dispatch_OK(char* payload);
@@ -194,6 +203,7 @@ private:
             &WirelessConnection::Dispatch_Nothing,
             &WirelessConnection::Dispatch_HostPair,
             &WirelessConnection::Dispatch_Ack,
+            &WirelessConnection::Dispatch_Sync,
             &WirelessConnection::Dispatch_BadCommand,
             &WirelessConnection::Dispatch_NotImplemented,
             &WirelessConnection::Dispatch_OK,
@@ -235,11 +245,6 @@ private:
     unsigned sequenceCounter{ 0 };
 };
 
-/*
-    Signal<std::string> Recv_Echo;
-
-    */
-
 inline void WirelessConnection::Dispatch_HostPair(char* payload) 
 {
     Recv_HostPair();
@@ -249,6 +254,12 @@ inline void WirelessConnection::Dispatch_Ack(char* payload)
 {
     struct Params { unsigned a; } p(*(Params*)payload);
     Recv_Ack(p.a);
+}
+
+inline void WirelessConnection::Dispatch_Sync(char* payload)
+{
+    struct Params { unsigned a; } p(*(Params*)payload);
+    Recv_Sync(p.a);
 }
 
 inline void WirelessConnection::Dispatch_BadCommand(char* payload) 
@@ -392,12 +403,13 @@ inline void WirelessConnection::Dispatch_NotifyObstacle(char* payload)
     Recv_NotifyObstacle(p.a, p.b);
 }
 
-inline void WirelessConnection::SendRaw(eProtocolCommand cmd, char* params, unsigned length, unsigned seq)
+inline void WirelessConnection::SendRaw(eProtocolCommand cmd, const char* params, unsigned length, unsigned seq)
 {
     if (!seq)
         seq = ++sequenceCounter;
 
     Datagram dg{ seq, cmd };
+    memset(dg.payload, 0, sizeof(dg.payload));
     if (params && length)
     {
         if (length > 20)
@@ -416,6 +428,11 @@ inline void WirelessConnection::HostPair()
 inline void WirelessConnection::Ack(unsigned seq) 
 {
     SendRaw(eProto_Ack, (char*)&seq, sizeof(unsigned), seq);
+}
+
+inline void WirelessConnection::Sync(unsigned seq)
+{
+    SendRaw(eProto_Sync, (char*)&seq, sizeof(unsigned), seq);
 }
 
 inline void WirelessConnection::BadCommand(unsigned seq) 
@@ -438,7 +455,7 @@ inline void WirelessConnection::Drop(unsigned id)
     SendRaw(eProto_Drop, (char*)&id, sizeof(unsigned));
 }
 
-inline void WirelessConnection::Echo(char* data, unsigned length) 
+inline void WirelessConnection::Echo(const char* data, unsigned length) 
 {
     SendRaw(eProto_Echo, data, length);
 }

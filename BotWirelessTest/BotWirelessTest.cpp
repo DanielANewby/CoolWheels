@@ -3,6 +3,7 @@
 #include "..\Shared\PCCommunication.h"
 #include "..\Shared\WirelessController.h"
 #include "..\Shared\WirelessConnection.h"
+#include "CW_RemoteControl.h"
 
 std::string CharToHex(char c) {
     const char codes[] = "0123456789ABCDEF";

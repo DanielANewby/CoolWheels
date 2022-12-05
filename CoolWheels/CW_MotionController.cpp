@@ -28,25 +28,25 @@ void MotionController::SetSpeed(float percent)
 
 void MotionController::Forward()
 {
-    leftWheel.Forward(speed);
-    rightWheel.Forward(speed);
+    leftWheel.Forward(speed * leftBias);
+    rightWheel.Forward(speed * rightBias);
 }
 
 void MotionController::Reverse()
 {
-    leftWheel.Reverse(speed);
-    rightWheel.Reverse(speed);
+    leftWheel.Reverse(speed * leftBias);
+    rightWheel.Reverse(speed * rightBias);
 }
 
 void MotionController::TurnLeft()
 {
     leftWheel.Stop();
-    rightWheel.Forward(speed);
+    rightWheel.Forward(speed * rightBias);
 }
 
 void MotionController::TurnRight()
 {
-    leftWheel.Forward(speed);
+    leftWheel.Forward(speed * leftBias);
     rightWheel.Stop();
 }
 
