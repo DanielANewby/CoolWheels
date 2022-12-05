@@ -31,9 +31,12 @@ int main()
     WirelessConnection wc {false};
     CLI cli(pc, wc);
 
+
     pc.Write("Wireless Controller initialized\n");
     ThisThread::sleep_for(250ms);
 
+    RemoteControl rc(wc);
+    
     while (true) {
         cli.Update();
         wc.Update();

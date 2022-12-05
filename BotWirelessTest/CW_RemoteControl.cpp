@@ -2,11 +2,7 @@
 
 #include "..\Shared\Config.h"
 
-#ifdef TRACE_PROTO
 #define trace printf
-#else
-#define trace(...)
-#endif
 
 void RemoteControl::OnHostPair() 
 { 
@@ -81,13 +77,13 @@ void RemoteControl::OnWaiting()
 void RemoteControl::OnSetLeftWheelBias(float bias) 
 {
      wc.NotImplemented(WirelessConnection::eProto_LeftBias);
-     trace("Recv LEFTBIAS: %f"\n, bias);
+     trace("Recv LEFTBIAS: %f\n", bias);
 }
 
 void RemoteControl::OnSetRightWheelBias(float bias)
 {
     wc.NotImplemented(WirelessConnection::eProto_RightBias);
-    trace("Recv RIGHTBIAS: $f\n", bias);
+    trace("Recv RIGHTBIAS: %f\n", bias);
 }
 
 void RemoteControl::OnTurnLeftDegrees(unsigned degrees) 
@@ -141,7 +137,7 @@ void RemoteControl::OnStop()
 void RemoteControl::OnSetPosition(unsigned xPos, unsigned yPos) 
 { 
     wc.NotImplemented(WirelessConnection::eProto_SetPosition); 
-    trace("Recv SetPos: %d, %y\n", xPos, yPos);
+    trace("Recv SetPos: %d, %d\n", xPos, yPos);
 }
 
 void RemoteControl::OnGetPosition() 

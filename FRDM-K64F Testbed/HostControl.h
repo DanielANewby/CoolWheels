@@ -4,12 +4,17 @@
 
 #include "..\Shared\RC_Base.h"
 #include "..\Shared\WirelessConnection.h"
+#include "..\Shared\PCCommunication.h"
 
 class HostControl : public RC_Base
 {
 public:
-    HostControl(WirelessConnection& conn):RC_Base(conn)
-    {}
+    HostControl(PCCommunication& _pc, WirelessConnection& conn):
+    RC_Base(conn),
+    pc(_pc)
+    {
+        printf("Host controller created\n");
+    }
 
     void OnHostPair();
     void OnAck(unsigned seq);
@@ -48,6 +53,7 @@ public:
     void OnNotifyObstacle(unsigned xPos, unsigned yPos);
 
 private:
+    PCCommunication& pc;
     unsigned handshake { 0 };
 };
 

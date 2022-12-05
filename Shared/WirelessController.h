@@ -94,7 +94,7 @@ public:
             count -= sizeof(unsigned);
             if ((*(unsigned*)(recvBuffer)) != remoteIdentifier) // Don't do this at home
             {
-                printf("Discarding chunk:\n");
+                printf("Dpairiscarding chunk:\n");
                 constexpr char hexChars[] = "0123456789ABCDEF";
                 for (unsigned n = 0; n < sizeof(recvBuffer); ++n)
                     printf("%c%c ", hexChars[((recvBuffer[n] >> 4) & 0xF)], hexChars[recvBuffer[n] & 0xF]);

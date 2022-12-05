@@ -110,8 +110,8 @@ private:
     }
 
     void echo(const std::vector<std::string>& tokens) {
-        std::string line;
-        for (auto iter = ++tokens.begin(); iter != tokens.end(); ++iter)
+        std::string line { tokens[1] };
+        for (auto iter = ++(++tokens.begin()); iter != tokens.end(); ++iter)
         {
             line += ' ' + *iter;
         }

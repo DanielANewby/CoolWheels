@@ -9,7 +9,9 @@ class RemoteControl : public RC_Base
 {
 public:
     RemoteControl(WirelessConnection& conn):RC_Base(conn)
-    {}
+    {
+        printf("Remote Control created\n");
+    }
 
     void OnHostPair();
     void OnAck(unsigned seq);

@@ -2,11 +2,11 @@
 
 #include "..\Shared\Config.h"
 
-#ifdef TRACE_PROTO
+//#ifdef TRACE_PROTO
 #define trace printf
-#else
-#define trace(...)
-#endif
+//#else
+//#define trace(...)
+//#endif
 
 void HostControl::OnHostPair() 
 { 
@@ -61,8 +61,8 @@ void HostControl::OnDrop(unsigned seq)
 
 void HostControl::OnEcho(const std::string str)
 {
-    wc.Echo(str.c_str(), str.length());
     trace("Recv ECHO: %s\n", str.c_str());
+    pc.Write(str);
 }
 
 void HostControl::OnPing(unsigned id) 
@@ -81,13 +81,13 @@ void HostControl::OnWaiting()
 void HostControl::OnSetLeftWheelBias(float bias) 
 {
      wc.NotImplemented(WirelessConnection::eProto_LeftBias);
-     trace("Recv LEFTBIAS: %f"\n, bias);
+     trace("Recv LEFTBIAS: %f\n", bias);
 }
 
 void HostControl::OnSetRightWheelBias(float bias)
 {
     wc.NotImplemented(WirelessConnection::eProto_RightBias);
-    trace("Recv RIGHTBIAS: $f\n", bias);
+    trace("Recv RIGHTBIAS: %f\n", bias);
 }
 
 void HostControl::OnTurnLeftDegrees(unsigned degrees) 
@@ -142,7 +142,7 @@ void HostControl::OnStop()
 void HostControl::OnSetPosition(unsigned xPos, unsigned yPos) 
 { 
     wc.NotImplemented(WirelessConnection::eProto_SetPosition); 
-    trace("Recv SetPos: %d, %y\n", xPos, yPos);
+    trace("Recv SetPos: %d, %d\n", xPos, yPos);
 }
 
 void HostControl::OnGetPosition() 

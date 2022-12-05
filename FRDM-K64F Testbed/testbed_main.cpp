@@ -2,6 +2,9 @@
 
 #include "..\Shared\PCCommunication.h"
 #include "..\Shared\WirelessController.h"
+#include "..\Shared\WirelessConnection.h"
+#include "..\Shared\CLI.h"
+#include "HostControl.h"
 
 DigitalOut green_builtin_led(LED1);
 DigitalOut red_builtin_led(LED2);
@@ -12,17 +15,25 @@ int main()
     PCCommunication pc;
     pc.Write("Testbed starting\n");
     ThisThread::sleep_for(250ms);
-
+/*
     WirelessController wc{
         WirelessController::HostIdentifier, // Host id
         WirelessController::BotIdentifier, // Remote id,
         WirelessController::HostAddress
     };
+*/
+    WirelessConnection wc { true };
+    CLI cli(pc, wc);
 
     pc.Write("Wireless Controller initialized\n");
     ThisThread::sleep_for(250ms);
 
+    HostControl host(pc, wc);
+
     while (true) {
+        cli.Update();
+        wc.Update();
+        /*
         bool hasCommand = pc.Update();
         if (hasCommand)
         {
@@ -44,6 +55,7 @@ int main()
             pc.Write(buffer);
             pc.Write("\n");            
         }
+        */
     }
 }
 

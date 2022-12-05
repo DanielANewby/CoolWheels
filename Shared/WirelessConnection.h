@@ -71,6 +71,7 @@ public:
                 if (buffer.seq > sequenceCounter)
                     sequenceCounter = buffer.seq;
             }
+            printf("Data received, dispatching\n");
             Dispatch(std::move(buffer));
         }
     }
@@ -426,6 +427,7 @@ inline void WirelessConnection::SendRaw(eProtocolCommand cmd, const char* params
             length = 20;
         memcpy(dg.payload, params, length);
     }
+    printf("Data sent\n");
     wc.Send((char*)&dg, 28);
 }
 
