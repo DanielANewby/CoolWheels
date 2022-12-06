@@ -2,10 +2,13 @@
 
 #include <signal.h>
 
-#include "..\Shared\WirelessController.h"
+#include "..\Shared\WirelessConnection.h"
+#include "..\Shared\PCCommunication.h"
+#include "..\Shared\CLI.h"
 
 #include "CW_MotorController.h"
 #include "CW_MotionController.h"
+#include "CW_RemoteControl.h"
 
 constexpr float k_BotSpeed = 0.5f; // Set 0.0 - 1.0 to control how fast everything goes
 constexpr auto k_fwdTime = 1000ms; // Move Time in ms
@@ -42,69 +45,25 @@ enum MoveMode {
 // main() runs in its own thread in the OS
 int main()
 {
-    printf("Starting\n");
-    printf("Starting wireless controller");
-    WirelessController wc{
-        WirelessController::BotIdentifier, // Host id,
-        WirelessController::HostIdentifier, // Remote id
-        WirelessController::BotAddress
-    };
-    printf("Started\n");
+    PCCommunication pc;
+    pc.Write("Bot starting\n");
+
+    pc.Write("Starting wireless connection\n");
+    WirelessConnection wc{ false };
+
+    pc.Write("Wireless connection initialized\n");
+    pc.Write("Initializing CLI\n");
+    CLI cli(pc, wc);
+
+    pc.Write("Initializing control module\n");
+    RemoteControl rc(wc, motionControl);
 
     switch1.rise(UserButtonPressed);
 
-    MoveMode mode{ kMode_Invalid };
+    pc.Write("Ready\n");
 
     while (true) {
-/*
-        if (userButtonSignal)
-        {
-            userButtonSignal = 0;
-            if (mode == kMode_Invalid)
-                mode = kMode_Forward;
-            else
-                mode = kMode_Invalid;
-            printf("Button pressed, running = %s\n", (mode == kMode_Invalid) ? "Stopped" : "running");
-        }
-
-        if (stopTriggerSignal)
-        {
-            stopTriggerSignal = 0;
-            ThisThread::sleep_for(100ms);
-            if (mode == kMode_Turning)
-                mode = kMode_Forward;
-            if (mode == kMode_Moving)
-                mode = kMode_Turn;
-        }
-
-        if (wc.Readable())
-        {
-            char buffer[64] = { 0 };
-            wc.Recv(buffer, 32);
-            wc.Send(buffer + 4, 28);
-        }
-*/
-        /*/ // This is a comment switch, replace * w/ ** to enable below
-        switch (mode)
-        {
-        case kMode_Forward:
-            mode = kMode_Moving;
-            stopTimer.attach(stopTrigger, k_fwdTime);
-            motionControl.Forward();
-            break;
-
-        case kMode_Turn:
-            mode = kMode_Turning;
-            stopTimer.attach(stopTrigger, k_turnTime);
-            motionControl.TurnRight();
-            break;
-
-        case kMode_Moving: // Fallthrough
-        case kMode_Turning: // Fallthrough
-        default: // No-op
-            break;
-        }
-        /**/
+        cli.Update();
+        wc.Update();
     }
 }
-

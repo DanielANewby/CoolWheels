@@ -19,7 +19,7 @@ public:
     void SetSpeed(float percent);
     
     void SetLeftWheelBias(float percent) { leftBias = percent; }
-    void SetRightWheelBias(float percent) { rightBias = percent }
+    void SetRightWheelBias(float percent) { rightBias = percent; }
     float GetLeftWheelBias() { return leftBias; }
     float GetRightWheelBias() { return rightBias; }
 

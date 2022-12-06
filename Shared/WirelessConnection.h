@@ -474,7 +474,7 @@ inline void WirelessConnection::Echo(const char* data, unsigned length)
 
 inline void WirelessConnection::Ping(unsigned id) 
 {
-    SendRaw(eProto_Ping, (char*)id, sizeof(unsigned));
+    SendRaw(eProto_Ping, (char*)&id, sizeof(unsigned));
 }
 
 inline void WirelessConnection::Waiting() 

@@ -1,12 +1,6 @@
 #include "HostControl.h"
 
-#include "..\Shared\Config.h"
-
-//#ifdef TRACE_PROTO
 #define trace printf
-//#else
-//#define trace(...)
-//#endif
 
 void HostControl::OnHostPair() 
 { 
@@ -62,12 +56,11 @@ void HostControl::OnDrop(unsigned seq)
 void HostControl::OnEcho(const std::string str)
 {
     trace("Recv ECHO: %s\n", str.c_str());
-    pc.Write(str);
+    printf("%s\n", str.c_str());
 }
 
 void HostControl::OnPing(unsigned id) 
 {
-    wc.Ping(id);
     trace("Recv PING: %d\n", id);
 }
 

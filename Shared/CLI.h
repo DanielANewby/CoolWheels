@@ -8,7 +8,6 @@
 #include <vector>
 #include "..\Shared\PCCommunication.h"
 #include "..\Shared\WirelessConnection.h"
-#include "..\Shared\Config.h"
 
 class CLI
 {
