@@ -66,123 +66,150 @@ void HostControl::OnPing(unsigned id)
 
 void HostControl::OnWaiting()
 { 
-    wc.BadCommand(WirelessConnection::eProto_Waiting);
+    wc.OK(0);
     trace("Recv WAITING\n");
 }
 
 // Movement protocol
 void HostControl::OnSetLeftWheelBias(float bias) 
 {
-     wc.NotImplemented(WirelessConnection::eProto_LeftBias);
+     wc.OK(0);
      trace("Recv LEFTBIAS: %f\n", bias);
 }
 
 void HostControl::OnSetRightWheelBias(float bias)
 {
-    wc.NotImplemented(WirelessConnection::eProto_RightBias);
+    wc.OK(0);
+    //wc.NotImplemented(WirelessConnection::eProto_RightBias);
     trace("Recv RIGHTBIAS: %f\n", bias);
+}
+
+void HostControl::OnForward(unsigned ms)
+{
+    wc.BadCommand(WirelessConnection::eProto_Forward);
+    trace("Recv Forward: %d\n", ms);
+}
+
+void HostControl::OnReverse(unsigned ms)
+{
+    wc.BadCommand(WirelessConnection::eProto_Reverse);
+    trace("Recv Reverse: %d\n", ms);
 }
 
 void HostControl::OnTurnLeftDegrees(unsigned degrees) 
 {
-    wc.NotImplemented(WirelessConnection::eProto_TurnLeftD);
+    wc.BadCommand(WirelessConnection::eProto_TurnLeftD);
     trace("Recv TurnLeftD: %d\n", degrees);
 }
 
 void HostControl::OnTurnLeftTimed(unsigned ms)
 {
-    wc.NotImplemented(WirelessConnection::eProto_TurnLeftT);
+    wc.BadCommand(WirelessConnection::eProto_TurnLeftT);
     trace("Recv TurnLeftT: %d\n", ms);
 }
 
 void HostControl::OnTurnRightDegrees(unsigned degrees)
 {
-    wc.NotImplemented(WirelessConnection::eProto_TurnRightD);
+    wc.BadCommand(WirelessConnection::eProto_TurnRightD);
     trace("Recv TurnRightD: %d\n", degrees);
 }
 
 void HostControl::OnTurnRightTimed(unsigned ms) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_TurnRightT); 
+    wc.BadCommand(WirelessConnection::eProto_TurnRightT); 
     trace("Recv TurnRightT: %d\n", ms);
 }
 
 void HostControl::OnSetSpeed(float speed) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_SetSpeed); 
+    wc.OK(0);
     trace("Recv SetSpeed: %f\n", speed);
 }
 
 void HostControl::OnGetSpeed() 
 {
-    wc.NotImplemented(WirelessConnection::eProto_GetSpeed);
+    wc.BadCommand(WirelessConnection::eProto_GetSpeed);
     trace("Recv GetSpeed\n");
 }
 
 void HostControl::OnGo()
 {
-    wc.NotImplemented(WirelessConnection::eProto_Go);
+    wc.BadCommand(WirelessConnection::eProto_Go);
     trace("Recv Go\n");
 }
 
 void HostControl::OnStop() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_Stop); 
+    //wc.NotImplemented(WirelessConnection::eProto_Stop); 
+    wc.OK(0);
     trace("Recv STOP\n");
 }
 
 // Positioning protocol
 void HostControl::OnSetPosition(unsigned xPos, unsigned yPos) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_SetPosition); 
+    wc.OK(0);
+    // TODO: LINK TO SEVEN SEGMENT DISPLAY
     trace("Recv SetPos: %d, %d\n", xPos, yPos);
 }
 
 void HostControl::OnGetPosition() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_GetPosition); 
+    wc.BadCommand(WirelessConnection::eProto_GetPosition); 
     trace("Recv GetPos\n");
 }
 
 void HostControl::OnSetOrientation(float radians) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_SetOrientation); 
+    wc.OK(0);
     trace("Recv SetOrientation: %f\n", radians);
 }
 
 void HostControl::OnGetOrientation() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_GetOrientation); 
+    wc.BadCommand(WirelessConnection::eProto_GetOrientation); 
     trace("Recv GetOrientation\n");
 }
 
 // Navigation
 void HostControl::OnSetDestination(unsigned xPos, unsigned yPos) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_SetDest); 
+    wc.OK(0);
     trace("Recv SetDest: %d, %d\n", xPos, yPos);
 }
 
 void HostControl::OnGetDestination() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_GetDest); 
+    wc.BadCommand(WirelessConnection::eProto_GetDest); 
     trace("Recv GetDest\n");
 }
 
 void HostControl::OnRequestPath() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_RequestPath); 
+    wc.BadCommand(WirelessConnection::eProto_RequestPath);
     trace("Recv Request Path\n");
 }
 
 void HostControl::OnRelayPath(unsigned step, unsigned nodeX, unsigned nodeY)
 { 
-    wc.NotImplemented(WirelessConnection::eProto_RelayPath); 
+    wc.OK(0);
     trace("Recv RelayPath: step: %d, (%d, %d)\n", step, nodeX, nodeY);
 }
 
 void HostControl::OnNotifyObstacle(unsigned xPos, unsigned yPos) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_ObstacleNotify); 
+    wc.OK(0);
     trace("Recv NotifyObstacle: %d, %d", xPos, yPos);
+}
+
+void HostControl::OnTurnTime(unsigned ms)
+{
+    wc.BadCommand(WirelessConnection::eProto_TurnTime);
+    trace("Recv TurnTime: %d\n", ms);
+}
+
+void HostControl::OnForwardTime(unsigned ms)
+{
+    wc.BadCommand(WirelessConnection::eProto_ForwardTime);
+    trace("Recv ForwardTime: %d\n", ms);
 }

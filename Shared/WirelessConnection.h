@@ -25,6 +25,8 @@ public:
         eProto_Waiting,
         eProto_LeftBias,
         eProto_RightBias,
+        eProto_Forward,
+        eProto_Reverse,
         eProto_TurnLeftD,
         eProto_TurnLeftT,
         eProto_TurnRightD,
@@ -42,6 +44,8 @@ public:
         eProto_RequestPath,
         eProto_RelayPath,
         eProto_ObstacleNotify,
+        eProto_ForwardTime,
+        eProto_TurnTime,
 
         eProto_Count,
         eProto_Invalid,
@@ -96,6 +100,8 @@ public:
     // Movement protocol
     void SetLeftWheelBias(float bias);
     void SetRightWheelBias(float bias);
+    void Forward(unsigned ms);
+    void Reverse(unsigned ms);
     void TurnLeftDegrees(unsigned degrees);
     void TurnLeftTimed(unsigned ms);
     void TurnRightDegrees(unsigned degrees);
@@ -118,6 +124,9 @@ public:
     void RelayPath(unsigned step, unsigned nodeX, unsigned nodeY);
     void NotifyObstacle(unsigned xPos, unsigned yPos);
 
+    void ForwardTime(unsigned ms);
+    void TurnTime(unsigned ms);
+
     ///////////////////////////////////////////////////////////////////////////
     // Receive signals
     ///////////////////////////////////////////////////////////////////////////
@@ -134,6 +143,8 @@ public:
 
     Signal<float> Recv_SetLeftWheelBias;
     Signal<float> Recv_SetRightWheelBias;
+    Signal<unsigned> Recv_Forward;
+    Signal<unsigned> Recv_Reverse;
     Signal<unsigned> Recv_TurnLeftDegrees;
     Signal<unsigned> Recv_TurnLeftTimed;
     Signal<unsigned> Recv_TurnRightDegrees;
@@ -153,6 +164,9 @@ public:
     Signal<> Recv_RequestPath;
     Signal<unsigned, unsigned, unsigned> Recv_RelayPath;
     Signal<unsigned, unsigned> Recv_NotifyObstacle;
+
+    Signal<unsigned> Recv_ForwardTime;
+    Signal<unsigned> Recv_TurnTime;
 
 private:
     struct Datagram {
@@ -183,6 +197,8 @@ private:
     void Dispatch_Waiting(char* payload);
     void Dispatch_SetLeftWheelBias(char* payload);
     void Dispatch_SetRightWheelBias(char* payload);
+    void Dispatch_Forward(char* payload);
+    void Dispatch_Reverse(char* payload);
     void Dispatch_TurnLeftDegrees(char* payload);
     void Dispatch_TurnLeftTimed(char* payload);
     void Dispatch_TurnRightDegrees(char* payload);
@@ -200,6 +216,8 @@ private:
     void Dispatch_RequestPath(char* payload);
     void Dispatch_RelayPath(char* payload);
     void Dispatch_NotifyObstacle(char* payload);
+    void Dispatch_ForwardTime(char* payload);
+    void Dispatch_TurnTime(char* payload);
     
     void Dispatch(Datagram&& dg)
     {
@@ -218,6 +236,8 @@ private:
             &WirelessConnection::Dispatch_Waiting,
             &WirelessConnection::Dispatch_SetLeftWheelBias,
             &WirelessConnection::Dispatch_SetRightWheelBias,
+            &WirelessConnection::Dispatch_Forward,
+            &WirelessConnection::Dispatch_Reverse,
             &WirelessConnection::Dispatch_TurnLeftDegrees,
             &WirelessConnection::Dispatch_TurnLeftTimed,
             &WirelessConnection::Dispatch_TurnRightDegrees,
@@ -235,6 +255,8 @@ private:
             &WirelessConnection::Dispatch_RequestPath,
             &WirelessConnection::Dispatch_RelayPath,
             &WirelessConnection::Dispatch_NotifyObstacle,
+            &WirelessConnection::Dispatch_ForwardTime,
+            &WirelessConnection::Dispatch_TurnTime,
         };
 
         if (dg.command < eProto_Count)
@@ -317,6 +339,18 @@ inline void WirelessConnection::Dispatch_SetRightWheelBias(char* payload)
 {
     struct Params { float a; } p(*(Params*)payload);
     Recv_SetRightWheelBias(p.a);
+}
+
+inline void WirelessConnection::Dispatch_Forward(char* payload)
+{
+    struct Params { unsigned a; } p(*(Params*)payload);
+    Recv_Forward(p.a);
+}
+
+inline void WirelessConnection::Dispatch_Reverse(char* payload)
+{
+    struct Params { unsigned a; } p(*(Params*)payload);
+    Recv_Reverse(p.a);
 }
 
 inline void WirelessConnection::Dispatch_TurnLeftDegrees(char* payload) 
@@ -414,6 +448,18 @@ inline void WirelessConnection::Dispatch_NotifyObstacle(char* payload)
     Recv_NotifyObstacle(p.a, p.b);
 }
 
+inline void WirelessConnection::Dispatch_TurnTime(char* payload)
+{
+    struct Params { unsigned a; } p(*(Params*)payload);
+    Recv_TurnTime(p.a);
+
+}
+inline void WirelessConnection::Dispatch_ForwardTime(char* payload)
+{
+    struct Params { unsigned a; } p(*(Params*)payload);
+    Recv_ForwardTime(p.a);
+}
+
 inline void WirelessConnection::SendRaw(eProtocolCommand cmd, const char* params, unsigned length, unsigned seq)
 {
     if (!seq)
@@ -490,6 +536,16 @@ inline void WirelessConnection::SetLeftWheelBias(float bias)
 inline void WirelessConnection::SetRightWheelBias(float bias)
 {
     SendRaw(eProto_RightBias, (char*)&bias, sizeof(float));    
+}
+
+inline void WirelessConnection::Forward(unsigned ms)
+{
+    SendRaw(eProto_Forward, (char*)&ms, sizeof(unsigned));
+}
+
+inline void WirelessConnection::Reverse(unsigned ms)
+{
+    SendRaw(eProto_Reverse, (char*)&ms, sizeof(unsigned));
 }
 
 inline void WirelessConnection::TurnLeftDegrees(unsigned degrees)
@@ -588,6 +644,16 @@ inline void WirelessConnection::NotifyObstacle(unsigned xPos, unsigned yPos)
     memcpy(buffer, &xPos, sizeof(unsigned));
     memcpy(buffer + sizeof(unsigned), &yPos, sizeof(unsigned));
     SendRaw(eProto_SetDest, buffer, sizeof(buffer));
+}
+
+inline void WirelessConnection::TurnTime(unsigned ms)
+{
+    SendRaw(eProto_TurnTime, (char*)&ms, sizeof(unsigned));
+}
+
+inline void WirelessConnection::ForwardTime(unsigned ms)
+{
+    SendRaw(eProto_ForwardTime, (char*)&ms, sizeof(unsigned));
 }
 
 #endif // WIRELESS_CONNECTION_H

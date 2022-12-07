@@ -30,6 +30,8 @@ public:
     // Movement protocol
     void OnSetLeftWheelBias(float bias);
     void OnSetRightWheelBias(float bias);
+    void OnForward(unsigned ms);
+    void OnReverse(unsigned ms);
     void OnTurnLeftDegrees(unsigned degrees);
     void OnTurnLeftTimed(unsigned ms);
     void OnTurnRightDegrees(unsigned degrees);
@@ -52,6 +54,9 @@ public:
     void OnRelayPath(unsigned step, unsigned nodeX, unsigned nodeY);
     void OnNotifyObstacle(unsigned xPos, unsigned yPos);
 
+    void OnTurnTime(unsigned ms);
+    void OnForwardTime(unsigned ms);
+    
 private:
     PCCommunication& pc;
     unsigned handshake { 0 };

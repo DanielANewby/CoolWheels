@@ -5,13 +5,15 @@
 #include "..\Shared\RC_Base.h"
 #include "..\Shared\WirelessConnection.h"
 #include "CW_MotionController.h"
+#include "CW_NavigationBase.h"
 
 class RemoteControl : public RC_Base
 {
 public:
-    RemoteControl(WirelessConnection& conn, MotionController& _mc):
+    RemoteControl(WirelessConnection& conn, MotionController& _mc, Navigation& _nav):
     RC_Base(conn),
-    mc(_mc)
+    mc(_mc),
+    nav(_nav)
     {
         printf("Remote Control created\n");
     }
@@ -30,6 +32,8 @@ public:
     // Movement protocol
     void OnSetLeftWheelBias(float bias);
     void OnSetRightWheelBias(float bias);
+    void OnForward(unsigned ms);
+    void OnReverse(unsigned ms);
     void OnTurnLeftDegrees(unsigned degrees);
     void OnTurnLeftTimed(unsigned ms);
     void OnTurnRightDegrees(unsigned degrees);
@@ -52,8 +56,12 @@ public:
     void OnRelayPath(unsigned step, unsigned nodeX, unsigned nodeY);
     void OnNotifyObstacle(unsigned xPos, unsigned yPos);
 
+    void OnTurnTime(unsigned ms);
+    void OnForwardTime(unsigned ms);
+
 private:
     MotionController& mc;
+    Navigation& nav;
     unsigned handshake { 0 };
 };
 

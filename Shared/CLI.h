@@ -147,6 +147,22 @@ private:
         }
     }
 
+    void forward(const std::vector<std::string>& tokens) {
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending forward: %d ms\n", param);
+            wc.Forward(param);
+        }
+    }
+
+    void reverse(const std::vector<std::string>& tokens) {
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending forward: %d ms\n", param);
+            wc.Reverse(param);
+        }
+    }
+
     void turnld(const std::vector<std::string>& tokens) {
         if (validate(tokens, 2)) {
             unsigned param = convert<unsigned>(tokens[1]);
@@ -266,6 +282,24 @@ private:
         }
     }
 
+    void turntime(const std::vector<std::string>& tokens)
+    {
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending forward: %d ms\n", param);
+            wc.TurnTime(param);
+        }
+    }
+
+    void forwardtime(const std::vector<std::string>& tokens)
+    {
+        if (validate(tokens, 2)) {
+            unsigned param = convert<unsigned>(tokens[1]);
+            printf("Sending forward: %d ms\n", param);
+            wc.ForwardTime(param);
+        }
+    }
+
     std::map<std::string, void(CLI::*)(const std::vector<std::string>&)> cmdMap {
         { "pair", &CLI::pair },
         { "ack", &CLI::ack },
@@ -278,6 +312,8 @@ private:
         { "waiting", &CLI::waiting },
         { "leftbias", &CLI::leftbias },
         { "rightbias", &CLI::rightbias },
+        { "forward", &CLI::forward },
+        { "reverse", &CLI::reverse },
         { "turnld", &CLI::turnld },
         { "turnrd", &CLI::turnrd },
         { "turnlt", &CLI::turnlt },
@@ -295,6 +331,8 @@ private:
         { "reqpath", &CLI::reqpath },
         { "pathnode", &CLI::pathnode },
         { "obstacle", &CLI::obstacle },
+        { "turntime", &CLI::turntime },
+        { "forwardtime", &CLI::forwardtime }
     };
 
     PCCommunication& pc;

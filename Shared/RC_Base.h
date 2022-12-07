@@ -21,6 +21,8 @@ public:
     Event_Waiting { wc.Recv_Waiting, this, &RC_Base::OnWaiting },
     Event_SetLeftWheelBias { wc.Recv_SetLeftWheelBias, this, &RC_Base::OnSetLeftWheelBias },
     Event_SetRightWheelBias { wc.Recv_SetRightWheelBias, this, &RC_Base::OnSetRightWheelBias },
+    Event_Forward{ wc.Recv_Forward, this, &RC_Base::OnForward },
+    Event_Reverse{ wc.Recv_Reverse, this, &RC_Base::OnReverse },
     Event_TurnLeftDegrees{ wc.Recv_TurnLeftDegrees, this, &RC_Base::OnTurnLeftDegrees },
     Event_TurnLeftTimed { wc.Recv_TurnLeftTimed, this, &RC_Base::OnTurnLeftTimed },
     Event_TurnRightDegrees { wc.Recv_TurnRightDegrees, this, &RC_Base::OnTurnRightDegrees },
@@ -37,7 +39,9 @@ public:
     Event_GetDestination { wc.Recv_GetDestination, this, &RC_Base::OnGetDestination },
     Event_RequestPath { wc.Recv_RequestPath, this, &RC_Base::OnRequestPath },
     Event_RelayPath { wc.Recv_RelayPath, this, &RC_Base::OnRelayPath },
-    Event_NotifyObstacle { wc.Recv_NotifyObstacle, this, &RC_Base::OnNotifyObstacle }
+    Event_NotifyObstacle { wc.Recv_NotifyObstacle, this, &RC_Base::OnNotifyObstacle },
+    Event_TurnTime { wc.Recv_TurnTime, this, &RC_Base::OnTurnTime },
+    Event_ForwardTime { wc.Recv_ForwardTime, this, &RC_Base::OnForwardTime}
     {}
 
     virtual ~RC_Base() {}
@@ -56,6 +60,8 @@ public:
     // Movement protocol
     virtual void OnSetLeftWheelBias(float bias) = 0;
     virtual void OnSetRightWheelBias(float bias) = 0;
+    virtual void OnForward(unsigned ms) = 0;
+    virtual void OnReverse(unsigned ms) = 0;
     virtual void OnTurnLeftDegrees(unsigned degrees) = 0;
     virtual void OnTurnLeftTimed(unsigned ms) = 0;
     virtual void OnTurnRightDegrees(unsigned degrees) = 0;
@@ -78,6 +84,9 @@ public:
     virtual void OnRelayPath(unsigned step, unsigned nodeX, unsigned nodeY) = 0;
     virtual void OnNotifyObstacle(unsigned xPos, unsigned yPos) = 0;
 
+    virtual void OnTurnTime(unsigned ms) = 0;
+    virtual void OnForwardTime(unsigned ms) = 0;
+
 protected:
     WirelessConnection& wc;
 
@@ -94,6 +103,8 @@ protected:
 
     SignalReceiver Event_SetLeftWheelBias;
     SignalReceiver Event_SetRightWheelBias;
+    SignalReceiver Event_Forward;
+    SignalReceiver Event_Reverse;
     SignalReceiver Event_TurnLeftDegrees;
     SignalReceiver Event_TurnLeftTimed;
     SignalReceiver Event_TurnRightDegrees;
@@ -113,6 +124,9 @@ protected:
     SignalReceiver Event_RequestPath;
     SignalReceiver Event_RelayPath;
     SignalReceiver Event_NotifyObstacle;
+
+    SignalReceiver Event_TurnTime;
+    SignalReceiver Event_ForwardTime;
 };
 
 #endif // RC_BASE_H

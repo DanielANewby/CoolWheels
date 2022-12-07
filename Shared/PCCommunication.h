@@ -49,7 +49,10 @@ public:
             if (amtRead > 0)
             {
                 if (echo)
+                {
                     usbLink.write(inputBuffer, amtRead);
+                    //Write(inputBuffer);
+                }
 
                 for (ssize_t n{ 0 }; n < amtRead; ++n)
                 {
@@ -71,7 +74,9 @@ public:
 
     void Write(const std::string& outputMsg)
     {
-        usbLink.write(outputMsg.c_str(), outputMsg.size());
+        //usbLink.write(outputMsg.c_str(), outputMsg.size());
+        // Changed to printf for syncing
+        printf("%s", outputMsg.c_str());
     }
     
     std::string ReadCommand()
@@ -83,7 +88,7 @@ public:
 
 private:
     static constexpr unsigned commandBufferSize{ 256 };
-    static constexpr unsigned inputBufferSize{ 10 };
+    static constexpr unsigned inputBufferSize{ 32 };
 
     BufferedSerial usbLink;
     unsigned commandBufferOffset{0};

@@ -74,115 +74,168 @@ void RemoteControl::OnWaiting()
 // Movement protocol
 void RemoteControl::OnSetLeftWheelBias(float bias) 
 {
-     wc.NotImplemented(WirelessConnection::eProto_LeftBias);
-     trace("Recv LEFTBIAS: %f\n", bias);
+    mc.SetLeftWheelBias(bias);
+    wc.OK(0);
+    trace("Recv LEFTBIAS: %f\n", bias);
 }
 
 void RemoteControl::OnSetRightWheelBias(float bias)
 {
-    wc.NotImplemented(WirelessConnection::eProto_RightBias);
+    mc.SetRightWheelBias(bias);    
+    wc.OK(0);
     trace("Recv RIGHTBIAS: %f\n", bias);
+}
+
+void RemoteControl::OnForward(unsigned ms)
+{
+    wc.OK(0);
+    mc.Forward(ms);
+    trace("Recv Forward: %d ms\n", ms);
+}
+
+void RemoteControl::OnReverse(unsigned ms)
+{
+    wc.OK(0);
+    mc.Reverse(ms);
+    trace("Recv Reverse: %d ms\n", ms);
 }
 
 void RemoteControl::OnTurnLeftDegrees(unsigned degrees) 
 {
-    wc.NotImplemented(WirelessConnection::eProto_TurnLeftD);
+    mc.TurnLeftDegrees(degrees);
+    wc.OK(0);
     trace("Recv TurnLeftD: %d\n", degrees);
 }
 
 void RemoteControl::OnTurnLeftTimed(unsigned ms)
 {
-    wc.NotImplemented(WirelessConnection::eProto_TurnLeftT);
+    mc.TurnLeftTimed(ms);
+    wc.OK(0);
     trace("Recv TurnLeftT: %d\n", ms);
 }
 
 void RemoteControl::OnTurnRightDegrees(unsigned degrees)
 {
-    wc.NotImplemented(WirelessConnection::eProto_TurnRightD);
+    mc.TurnRightDegrees(degrees);
+    wc.OK(0);
     trace("Recv TurnRightD: %d\n", degrees);
 }
 
 void RemoteControl::OnTurnRightTimed(unsigned ms) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_TurnRightT); 
+    mc.TurnRightTimed(ms);
+    wc.OK(0);
     trace("Recv TurnRightT: %d\n", ms);
 }
 
 void RemoteControl::OnSetSpeed(float speed) 
-{ 
-    wc.NotImplemented(WirelessConnection::eProto_SetSpeed); 
+{
+    trace("Setting speed: %f\n", speed);
+    mc.SetSpeed(speed);
     trace("Recv SetSpeed: %f\n", speed);
 }
 
 void RemoteControl::OnGetSpeed() 
 {
-    wc.NotImplemented(WirelessConnection::eProto_GetSpeed);
     trace("Recv GetSpeed\n");
+    wc.SetSpeed(mc.GetSpeed());
 }
 
 void RemoteControl::OnGo()
 {
-    wc.NotImplemented(WirelessConnection::eProto_Go);
+    wc.OK(0);
+    nav.Go();
     trace("Recv GO\n");
 }
+
 void RemoteControl::OnStop() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_Stop); 
-    trace("Recv STOP\n");
+    mc.Stop();
+    printf("STOPPED\n");
+    wc.OK(0);
 }
 
 // Positioning protocol
 void RemoteControl::OnSetPosition(unsigned xPos, unsigned yPos) 
-{ 
-    wc.NotImplemented(WirelessConnection::eProto_SetPosition); 
+{
+    nav.SetPosition(xPos, yPos);
+    wc.OK(0);
     trace("Recv SetPos: %d, %d\n", xPos, yPos);
 }
 
 void RemoteControl::OnGetPosition() 
-{ 
-    wc.NotImplemented(WirelessConnection::eProto_GetPosition); 
+{
+    unsigned xPos, yPos;
+    nav.GetPosition(xPos, yPos);
+    wc.SetPosition(xPos, yPos);
     trace("Recv GetPos\n");
 }
 
 void RemoteControl::OnSetOrientation(float radians) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_SetOrientation); 
+    nav.SetOrientation(radians);
+    wc.OK(0);
     trace("Recv SetOrientation: %f\n", radians);
 }
 
 void RemoteControl::OnGetOrientation() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_GetOrientation); 
+    float o = nav.GetOrientation();
+    wc.SetOrientation(o);
     trace("Recv GetOrientation\n");
 }
 
 // Navigation
 void RemoteControl::OnSetDestination(unsigned xPos, unsigned yPos) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_SetDest); 
+    nav.SetDestination(xPos, yPos);
+    wc.OK(0);
     trace("Recv SetDest: %d, %d\n", xPos, yPos);
 }
 
 void RemoteControl::OnGetDestination() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_GetDest); 
+    unsigned xPos, yPos;
+    nav.GetDestination(xPos, yPos);
+    wc.SetDestination(xPos, yPos);
     trace("Recv GetDest\n");
 }
 
 void RemoteControl::OnRequestPath() 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_RequestPath); 
+    auto nodes = nav.GetPath();
+    unsigned step{ 0 };
+    for (const auto& pair: nodes)
+    {
+        wc.RelayPath(++step, pair.first, pair.second);
+        wait_us(50);
+    }
     trace("Recv Request Path\n");
 }
 
 void RemoteControl::OnRelayPath(unsigned step, unsigned nodeX, unsigned nodeY)
 { 
-    wc.NotImplemented(WirelessConnection::eProto_RelayPath); 
-    trace("Recv RelayPath: step: %d, (%d, %d)\n", step, nodeX, nodeY);
+    wc.BadCommand(WirelessConnection::eProto_RelayPath); 
+    trace("Recv RelayPath: step: %d, (%d, %d)\nREPLY: BAD COMMAND\n", step, nodeX, nodeY);
 }
 
 void RemoteControl::OnNotifyObstacle(unsigned xPos, unsigned yPos) 
 { 
-    wc.NotImplemented(WirelessConnection::eProto_ObstacleNotify); 
+    nav.AddObstacle(xPos, yPos);
+    wc.OK(0);
     trace("Recv NotifyObstacle: %d, %d", xPos, yPos);
+}
+
+void RemoteControl::OnTurnTime(unsigned ms)
+{
+    mc.SetTurnTimeMs(ms);
+    wc.OK(0);
+    trace("Recv TurnTime: %d\n", ms);
+}
+
+void RemoteControl::OnForwardTime(unsigned ms)
+{
+    mc.SetForwardTimeMs(ms);
+    wc.OK(0);
+    trace("Recv ForwardTime: %d\n", ms);
 }
