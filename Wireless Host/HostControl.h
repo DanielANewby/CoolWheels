@@ -5,13 +5,20 @@
 #include "..\Shared\RC_Base.h"
 #include "..\Shared\WirelessConnection.h"
 #include "..\Shared\PCCommunication.h"
+#include "..\Shared\SevenSegment.h"
 
 class HostControl : public RC_Base
 {
 public:
-    HostControl(PCCommunication& _pc, WirelessConnection& conn):
+    HostControl(
+        PCCommunication& _pc,
+        WirelessConnection& conn,
+        SevenSegmentController* _ssx,
+        SevenSegmentController* _ssy):
     RC_Base(conn),
-    pc(_pc)
+    pc(_pc),
+    ssx(_ssx),
+    ssy(_ssy)
     {
         printf("Host controller created\n");
     }
@@ -57,8 +64,12 @@ public:
     void OnTurnTime(unsigned ms);
     void OnForwardTime(unsigned ms);
     
+    void OnStep();
+    
 private:
     PCCommunication& pc;
+    SevenSegmentController* ssx;
+    SevenSegmentController* ssy;
     unsigned handshake { 0 };
 };
 

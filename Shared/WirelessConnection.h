@@ -46,6 +46,7 @@ public:
         eProto_ObstacleNotify,
         eProto_ForwardTime,
         eProto_TurnTime,
+        eProto_Step,
 
         eProto_Count,
         eProto_Invalid,
@@ -127,6 +128,8 @@ public:
     void ForwardTime(unsigned ms);
     void TurnTime(unsigned ms);
 
+    void Step();
+
     ///////////////////////////////////////////////////////////////////////////
     // Receive signals
     ///////////////////////////////////////////////////////////////////////////
@@ -167,6 +170,8 @@ public:
 
     Signal<unsigned> Recv_ForwardTime;
     Signal<unsigned> Recv_TurnTime;
+
+    Signal<> Recv_Step;
 
 private:
     struct Datagram {
@@ -218,7 +223,8 @@ private:
     void Dispatch_NotifyObstacle(char* payload);
     void Dispatch_ForwardTime(char* payload);
     void Dispatch_TurnTime(char* payload);
-    
+    void Dispatch_Step(char* payload);
+
     void Dispatch(Datagram&& dg)
     {
         typedef void (WirelessConnection::*fptr_type)(char*);
@@ -257,7 +263,9 @@ private:
             &WirelessConnection::Dispatch_NotifyObstacle,
             &WirelessConnection::Dispatch_ForwardTime,
             &WirelessConnection::Dispatch_TurnTime,
+            &WirelessConnection::Dispatch_Step
         };
+        static_assert(sizeof(fptrs) / sizeof(fptr_type) == eProto_Count, "Invalid Dispatch Table Size");
 
         if (dg.command < eProto_Count)
         {
@@ -460,6 +468,11 @@ inline void WirelessConnection::Dispatch_ForwardTime(char* payload)
     Recv_ForwardTime(p.a);
 }
 
+inline void WirelessConnection::Dispatch_Step(char* payload)
+{
+    Recv_Step();
+}
+
 inline void WirelessConnection::SendRaw(eProtocolCommand cmd, const char* params, unsigned length, unsigned seq)
 {
     if (!seq)
@@ -654,6 +667,11 @@ inline void WirelessConnection::TurnTime(unsigned ms)
 inline void WirelessConnection::ForwardTime(unsigned ms)
 {
     SendRaw(eProto_ForwardTime, (char*)&ms, sizeof(unsigned));
+}
+
+inline void WirelessConnection::Step()
+{
+    SendRaw(eProto_Step, nullptr, 0);
 }
 
 #endif // WIRELESS_CONNECTION_H

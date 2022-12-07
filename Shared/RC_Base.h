@@ -40,8 +40,9 @@ public:
     Event_RequestPath { wc.Recv_RequestPath, this, &RC_Base::OnRequestPath },
     Event_RelayPath { wc.Recv_RelayPath, this, &RC_Base::OnRelayPath },
     Event_NotifyObstacle { wc.Recv_NotifyObstacle, this, &RC_Base::OnNotifyObstacle },
+    Event_ForwardTime { wc.Recv_ForwardTime, this, &RC_Base::OnForwardTime},
     Event_TurnTime { wc.Recv_TurnTime, this, &RC_Base::OnTurnTime },
-    Event_ForwardTime { wc.Recv_ForwardTime, this, &RC_Base::OnForwardTime}
+    Event_Step { wc.Recv_Step, this, &RC_Base::OnStep }
     {}
 
     virtual ~RC_Base() {}
@@ -87,6 +88,8 @@ public:
     virtual void OnTurnTime(unsigned ms) = 0;
     virtual void OnForwardTime(unsigned ms) = 0;
 
+    virtual void OnStep() = 0;
+
 protected:
     WirelessConnection& wc;
 
@@ -127,6 +130,7 @@ protected:
 
     SignalReceiver Event_TurnTime;
     SignalReceiver Event_ForwardTime;
+    SignalReceiver Event_Step;
 };
 
 #endif // RC_BASE_H

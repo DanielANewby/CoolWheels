@@ -300,6 +300,14 @@ private:
         }
     }
 
+    void step(const std::vector<std::string>& tokens)
+    {
+        if (validate(tokens, 1)) {
+            printf("Sending STEP\n");
+            wc.Step();
+        }
+    }
+
     std::map<std::string, void(CLI::*)(const std::vector<std::string>&)> cmdMap {
         { "pair", &CLI::pair },
         { "ack", &CLI::ack },
@@ -332,7 +340,8 @@ private:
         { "pathnode", &CLI::pathnode },
         { "obstacle", &CLI::obstacle },
         { "turntime", &CLI::turntime },
-        { "forwardtime", &CLI::forwardtime }
+        { "forwardtime", &CLI::forwardtime },
+        { "step", &CLI::step }
     };
 
     PCCommunication& pc;

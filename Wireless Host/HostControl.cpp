@@ -149,7 +149,12 @@ void HostControl::OnStop()
 void HostControl::OnSetPosition(unsigned xPos, unsigned yPos) 
 { 
     wc.OK(0);
-    // TODO: LINK TO SEVEN SEGMENT DISPLAY
+    if (xPos > 8) xPos = 9;
+    if (yPos > 8) yPos = 9;
+    if (ssx)
+       ssx->Put(xPos);
+    if (ssy)
+        ssy->Put(yPos);
     trace("Recv SetPos: %d, %d\n", xPos, yPos);
 }
 
@@ -212,4 +217,10 @@ void HostControl::OnForwardTime(unsigned ms)
 {
     wc.BadCommand(WirelessConnection::eProto_ForwardTime);
     trace("Recv ForwardTime: %d\n", ms);
+}
+
+void HostControl::OnStep()
+{
+    wc.BadCommand(WirelessConnection::eProto_Step);
+    trace("Recv Step\n");
 }

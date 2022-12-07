@@ -239,3 +239,10 @@ void RemoteControl::OnForwardTime(unsigned ms)
     wc.OK(0);
     trace("Recv ForwardTime: %d\n", ms);
 }
+
+void RemoteControl::OnStep()
+{
+    wc.OK(0);
+    trace("Recv STEP\n");
+    nav.Step();
+}

@@ -2,6 +2,8 @@
 #define BASIC_NAVIGATION_H
 #pragma once
 
+#include "mbed.h"
+
 #include "CW_NavigationBase.h"
 
 class BasicNavigation : public Navigation
@@ -28,15 +30,16 @@ public:
 
     virtual void Step()
     {
+        printf("Nav: Stepping\n");
     }
 
     virtual void Go()
     {
+        printf("Nav: Go\n");
     }
 
     virtual void Update()
     {
-        
     }
 
 private:

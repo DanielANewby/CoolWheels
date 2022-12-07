@@ -59,6 +59,8 @@ public:
     void OnTurnTime(unsigned ms);
     void OnForwardTime(unsigned ms);
 
+    void OnStep();
+
 private:
     MotionController& mc;
     Navigation& nav;
