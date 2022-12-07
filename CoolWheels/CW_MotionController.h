@@ -4,6 +4,8 @@
 #include "mbed.h"
 
 #include "CW_MotorController.h"
+#include "..\Shared\CWSignal.h"
+
 #include <ratio>
 
 class MotionController
@@ -16,6 +18,8 @@ public:
         float period = 0.1,
         float speed = 1.0
     );
+
+    void Update();
 
     void SetSpeed(float percent);
     float GetSpeed();
@@ -50,6 +54,8 @@ public:
 
     bool Busy() { return !!activeController; }
 
+    Signal<> stopSignal;
+    
 private:
     void Activate(unsigned ms) {
         activeController = this;
@@ -68,7 +74,7 @@ private:
 
     Timeout stopTimer;
 
-    static MotionController* activeController;
+    MotionController* activeController { nullptr };
     static void StopCallback();
 };
 

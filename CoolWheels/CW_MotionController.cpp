@@ -1,10 +1,11 @@
 #include "CW_MotionController.h"
 
-MotionController* MotionController::activeController { nullptr };
+#include <signal.h>
+
+volatile sig_atomic_t stopFlag { 0 };
 void MotionController::StopCallback()
 {
-    if (MotionController::activeController)
-        activeController->Stop();
+    stopFlag = 1;
 }
 
 MotionController::MotionController(MotorController left, MotorController right, float _speed):
@@ -27,6 +28,15 @@ MotionController::MotionController(
     rightWheel.Stop();
 }
 
+void MotionController::Update()
+{
+    if (stopFlag) {
+        stopFlag = 0;
+        if (MotionController::activeController)
+            activeController->Stop();
+    }
+}
+
 void MotionController::SetSpeed(float percent)
 {
     // Clamp speed as a percentage
@@ -40,7 +50,6 @@ float MotionController::GetSpeed()
 
 void MotionController::Forward(unsigned ms)
 {
-    Stop();
     if (!ms) 
     {
         ms = forwardTime;
@@ -56,7 +65,6 @@ void MotionController::Forward(unsigned ms)
 
 void MotionController::Reverse(unsigned ms)
 {
-    Stop();
     if (!ms) 
         ms = forwardTime;
     ms /= speed;
@@ -68,7 +76,6 @@ void MotionController::Reverse(unsigned ms)
 
 void MotionController::TurnLeft(unsigned ms)
 {
-    Stop();
     if (!ms) 
         ms = turnTime;
     ms /= speed;
@@ -80,7 +87,6 @@ void MotionController::TurnLeft(unsigned ms)
 
 void MotionController::TurnRight(unsigned ms)
 {
-    Stop();
     if (!ms) 
         ms = turnTime;
     ms /= speed;
@@ -93,14 +99,14 @@ void MotionController::TurnRight(unsigned ms)
 void MotionController::TurnLeftDegrees(unsigned degrees)
 {
     // Assume calibrated turn time
-    unsigned ms = (unsigned)((turnTime * degrees) * speed / 90.f);
+    unsigned ms = (unsigned)((turnTime * degrees) / speed / 90.f);
     TurnLeft(ms);
 }
 
 void MotionController::TurnRightDegrees(unsigned degrees)
 {
     // Assume calibrated turn time
-    unsigned ms = (unsigned)((turnTime * degrees) * speed / 90.f);
+    unsigned ms = (unsigned)((turnTime * degrees) / speed / 90.f);
     TurnRight(ms);
 }
 
@@ -120,6 +126,7 @@ void MotionController::Stop()
     //printf("MC: stopping\n");
     leftWheel.Stop();
     rightWheel.Stop();
+    stopSignal();
 }
 
 void MotionController::MoveForward()
